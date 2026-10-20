@@ -10,15 +10,34 @@ import {
   Search, 
   ArrowUpRight, 
   ArrowDownRight,
-  Filter,
   DollarSign,
   ShoppingCart,
   Percent,
   RotateCcw,
+  Calendar,
   Layers,
   ChevronRight,
-  Sparkles
+  Filter
 } from 'lucide-react';
+import {
+  ResponsiveContainer,
+  ComposedChart,
+  AreaChart,
+  Area,
+  BarChart,
+  Bar,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ReferenceLine,
+  Cell,
+  PieChart,
+  Pie
+} from 'recharts';
 import { 
   executiveKpis, 
   monthlyTrends, 
@@ -45,6 +64,12 @@ export default function App() {
   const formatCurrency = (val) => 
     new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(val);
   
+  const formatCurrencyCompact = (val) => {
+    if (val >= 1000000) return `$${(val / 1000000).toFixed(1)}M`;
+    if (val >= 1000) return `$${(val / 1000).toFixed(0)}k`;
+    return `$${val}`;
+  };
+
   const formatNumber = (val) => 
     new Intl.NumberFormat('en-US').format(val);
 
@@ -64,6 +89,47 @@ export default function App() {
     return monthlyTrends.filter(m => String(m.year) === selectedYear);
   }, [selectedYear]);
 
+  // Monthly trends with calculated MoM
+  const monthlyTrendsWithMom = useMemo(() => {
+    return monthlyTrends.map((item, idx) => {
+      const prev = idx > 0 ? monthlyTrends[idx - 1] : null;
+      const mom = prev ? ((item.net_revenue - prev.net_revenue) / prev.net_revenue) * 100 : 0;
+      return {
+        ...item,
+        mom_growth_pct: Number(mom.toFixed(1))
+      };
+    });
+  }, []);
+
+  // Aggregated regional revenue
+  const regionalSummary = useMemo(() => {
+    const map = {};
+    regionalBreakdown.forEach(item => {
+      if (!map[item.region]) {
+        map[item.region] = { region: item.region, revenue: 0, profit: 0 };
+      }
+      map[item.region].revenue += item.revenue;
+      map[item.region].profit += item.profit;
+    });
+    return Object.values(map);
+  }, []);
+
+  // Cohort matrix transformation
+  const cohortMatrix = useMemo(() => {
+    const cohortsMap = {};
+    cohortRetention.forEach(item => {
+      if (!cohortsMap[item.cohort]) {
+        cohortsMap[item.cohort] = {
+          cohort: item.cohort,
+          total_users: item.total_users,
+          periods: {}
+        };
+      }
+      cohortsMap[item.cohort].periods[item.period] = item.retention_rate;
+    });
+    return Object.values(cohortsMap).slice(0, 10);
+  }, []);
+
   // What-If calculations
   const whatIfResults = useMemo(() => {
     const baseVolume = 35000;
@@ -76,7 +142,8 @@ export default function App() {
     const newCost = baseCost * (1 + costInflationPct / 100);
 
     const baseRevenue = baseVolume * basePrice;
-    const baseProfit = baseVolume * (basePrice - baseCost);
+    const baseCogs = baseVolume * baseCost;
+    const baseProfit = baseRevenue - baseCogs;
     const baseMargin = (baseProfit / baseRevenue) * 100;
 
     const projectedRevenue = newVolume * newPrice;
@@ -86,6 +153,7 @@ export default function App() {
 
     return {
       baseRevenue,
+      baseCogs,
       baseProfit,
       baseMargin,
       newPrice,
@@ -99,6 +167,25 @@ export default function App() {
       revenueDelta: projectedRevenue - baseRevenue
     };
   }, [priceChangePct, elasticity, costInflationPct]);
+
+  // Comparison data for What-If chart
+  const whatIfChartData = useMemo(() => [
+    {
+      metric: 'Net Revenue',
+      Baseline: whatIfResults.baseRevenue,
+      Projected: whatIfResults.projectedRevenue,
+    },
+    {
+      metric: 'COGS',
+      Baseline: whatIfResults.baseCogs,
+      Projected: whatIfResults.projectedCogs,
+    },
+    {
+      metric: 'Gross Profit',
+      Baseline: whatIfResults.baseProfit,
+      Projected: whatIfResults.projectedProfit,
+    }
+  ], [whatIfResults]);
 
   // CSV export helper
   const exportToCsv = (filename, rows) => {
@@ -115,10 +202,12 @@ export default function App() {
     document.body.removeChild(link);
   };
 
+  const CATEGORY_COLORS = ['#2563eb', '#6366f1', '#0d9488', '#f59e0b'];
+
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
+    <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
       {/* Top Header */}
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-30">
+      <header className="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-3">
@@ -131,8 +220,8 @@ export default function App() {
               </div>
             </div>
 
-            <div className="flex items-center space-x-2">
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
+            <div className="flex items-center space-x-3">
+              <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
                 <span className="w-1.5 h-1.5 mr-1.5 rounded-full bg-emerald-500"></span>
                 DWH Synced (PostgreSQL 18)
               </span>
@@ -186,7 +275,7 @@ export default function App() {
             {/* KPI Banner Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-                <div className="flex items-center justify-between text-slate-500 text-xs font-medium uppercase tracking-wider">
+                <div className="flex items-center justify-between text-slate-500 text-xs font-semibold uppercase tracking-wider">
                   <span>Total Net Sales</span>
                   <DollarSign className="w-4 h-4 text-slate-400" />
                 </div>
@@ -200,13 +289,13 @@ export default function App() {
               </div>
 
               <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-                <div className="flex items-center justify-between text-slate-500 text-xs font-medium uppercase tracking-wider">
+                <div className="flex items-center justify-between text-slate-500 text-xs font-semibold uppercase tracking-wider">
                   <span>Gross Profit</span>
                   <TrendingUp className="w-4 h-4 text-slate-400" />
                 </div>
                 <div className="mt-2 flex items-baseline justify-between">
                   <span className="text-2xl font-bold text-slate-900">{formatCurrency(executiveKpis.total_profit)}</span>
-                  <span className="text-xs font-semibold px-2 py-0.5 bg-blue-50 text-blue-700 rounded">
+                  <span className="text-xs font-semibold px-2 py-0.5 bg-blue-50 text-blue-700 rounded border border-blue-200">
                     {executiveKpis.gross_margin_pct}% Margin
                   </span>
                 </div>
@@ -214,7 +303,7 @@ export default function App() {
               </div>
 
               <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-                <div className="flex items-center justify-between text-slate-500 text-xs font-medium uppercase tracking-wider">
+                <div className="flex items-center justify-between text-slate-500 text-xs font-semibold uppercase tracking-wider">
                   <span>Average Order Value</span>
                   <ShoppingCart className="w-4 h-4 text-slate-400" />
                 </div>
@@ -228,7 +317,7 @@ export default function App() {
               </div>
 
               <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-                <div className="flex items-center justify-between text-slate-500 text-xs font-medium uppercase tracking-wider">
+                <div className="flex items-center justify-between text-slate-500 text-xs font-semibold uppercase tracking-wider">
                   <span>Returns & Refunds</span>
                   <RotateCcw className="w-4 h-4 text-slate-400" />
                 </div>
@@ -240,63 +329,133 @@ export default function App() {
               </div>
             </div>
 
-            {/* Sales Momentum Graph */}
+            {/* Monthly Revenue & Profit Momentum Chart */}
             <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-4 border-b border-slate-100 gap-2">
                 <div>
                   <h3 className="text-base font-bold text-slate-900">Monthly Revenue & Profit Momentum</h3>
                   <p className="text-xs text-slate-500">45-month historical trend (Jan 2023 - Sep 2026)</p>
                 </div>
-                <div className="flex items-center space-x-3 text-xs">
-                  <span className="flex items-center font-medium text-slate-700">
-                    <span className="w-3 h-3 bg-blue-600 rounded-sm mr-1.5"></span> Net Revenue ($)
+                <div className="flex items-center space-x-4 text-xs font-medium">
+                  <span className="flex items-center text-slate-700">
+                    <span className="w-3 h-3 bg-blue-600 rounded-sm mr-1.5 inline-block"></span> Net Revenue ($)
                   </span>
-                  <span className="flex items-center font-medium text-slate-700">
-                    <span className="w-3 h-3 bg-emerald-500 rounded-sm mr-1.5"></span> Gross Profit ($)
+                  <span className="flex items-center text-slate-700">
+                    <span className="w-3 h-3 bg-emerald-500 rounded-sm mr-1.5 inline-block"></span> Gross Profit ($)
+                  </span>
+                  <span className="flex items-center text-slate-700">
+                    <span className="w-3 h-0.5 bg-amber-500 mr-1.5 inline-block"></span> Margin %
                   </span>
                 </div>
               </div>
 
-              {/* Bar visualization */}
-              <div className="mt-6 h-64 flex items-end space-x-1.5 overflow-x-auto pb-4 pt-4">
-                {monthlyTrends.map((m, i) => {
-                  const revHeight = Math.min(100, Math.max(15, (m.net_revenue / 1800000) * 100));
-                  const profHeight = Math.min(100, Math.max(8, (m.gross_profit / 1800000) * 100));
-                  return (
-                    <div key={i} className="flex-1 min-w-[20px] flex flex-col items-center group relative h-full justify-end">
-                      {/* Tooltip */}
-                      <div className="absolute bottom-full mb-2 hidden group-hover:flex flex-col bg-slate-900 text-white text-[11px] py-1.5 px-2.5 rounded shadow-lg whitespace-nowrap z-20 pointer-events-none">
-                        <span className="font-bold">{m.period_label}</span>
-                        <span>Revenue: {formatCurrency(m.net_revenue)}</span>
-                        <span>Profit: {formatCurrency(m.gross_profit)} ({m.margin_pct}%)</span>
-                        <span>Orders: {formatNumber(m.orders)}</span>
-                      </div>
-
-                      <div className="w-full flex items-end justify-center space-x-0.5">
-                        <div 
-                          style={{ height: `${revHeight}%` }} 
-                          className="w-2.5 bg-blue-600 rounded-t-sm group-hover:bg-blue-700 transition-all"
-                        ></div>
-                        <div 
-                          style={{ height: `${profHeight}%` }} 
-                          className="w-2.5 bg-emerald-500 rounded-t-sm group-hover:bg-emerald-600 transition-all"
-                        ></div>
-                      </div>
-                      <span className="text-[9px] text-slate-400 mt-2 truncate w-full text-center">
-                        {m.month_number === 1 ? m.year : m.period_label.split(' ')[0]}
-                      </span>
-                    </div>
-                  );
-                })}
+              {/* Recharts Area + Bar Chart */}
+              <div className="mt-6 w-full h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <ComposedChart data={monthlyTrends} margin={{ top: 10, right: 20, left: 10, bottom: 20 }}>
+                    <defs>
+                      <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#2563eb" stopOpacity={0.25} />
+                        <stop offset="95%" stopColor="#2563eb" stopOpacity={0.0} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+                    <XAxis 
+                      dataKey="period_label" 
+                      tick={{ fontSize: 11, fill: '#64748b' }}
+                      tickLine={false}
+                      axisLine={{ stroke: '#cbd5e1' }}
+                      interval={2}
+                    />
+                    <YAxis 
+                      yAxisId="left"
+                      tickFormatter={formatCurrencyCompact}
+                      tick={{ fontSize: 11, fill: '#64748b' }}
+                      tickLine={false}
+                      axisLine={false}
+                      domain={[0, 2000000]}
+                    />
+                    <YAxis 
+                      yAxisId="right" 
+                      orientation="right" 
+                      tickFormatter={(v) => `${v}%`}
+                      tick={{ fontSize: 11, fill: '#f59e0b' }}
+                      tickLine={false}
+                      axisLine={false}
+                      domain={[20, 35]}
+                    />
+                    <Tooltip 
+                      content={({ active, payload, label }) => {
+                        if (active && payload && payload.length) {
+                          const data = payload[0].payload;
+                          return (
+                            <div className="bg-slate-900 text-white text-xs p-3 rounded-lg shadow-xl border border-slate-800">
+                              <p className="font-bold border-b border-slate-700 pb-1 mb-1.5 text-slate-200">{label}</p>
+                              <div className="space-y-1">
+                                <p className="flex justify-between gap-4">
+                                  <span className="text-slate-400">Net Revenue:</span>
+                                  <span className="font-semibold text-blue-400">{formatCurrency(data.net_revenue)}</span>
+                                </p>
+                                <p className="flex justify-between gap-4">
+                                  <span className="text-slate-400">Gross Profit:</span>
+                                  <span className="font-semibold text-emerald-400">{formatCurrency(data.gross_profit)}</span>
+                                </p>
+                                <p className="flex justify-between gap-4">
+                                  <span className="text-slate-400">Gross Margin:</span>
+                                  <span className="font-semibold text-amber-400">{data.margin_pct}%</span>
+                                </p>
+                                <p className="flex justify-between gap-4">
+                                  <span className="text-slate-400">Order Volume:</span>
+                                  <span className="font-semibold text-slate-200">{formatNumber(data.orders)} orders</span>
+                                </p>
+                              </div>
+                            </div>
+                          );
+                        }
+                        return null;
+                      }}
+                    />
+                    <Area 
+                      yAxisId="left"
+                      type="monotone" 
+                      dataKey="net_revenue" 
+                      name="Net Revenue"
+                      stroke="#2563eb" 
+                      strokeWidth={2}
+                      fillOpacity={1} 
+                      fill="url(#revenueGradient)" 
+                    />
+                    <Bar 
+                      yAxisId="left"
+                      dataKey="gross_profit" 
+                      name="Gross Profit"
+                      fill="#10b981" 
+                      radius={[3, 3, 0, 0]}
+                      maxBarSize={16}
+                    />
+                    <Line 
+                      yAxisId="right"
+                      type="monotone" 
+                      dataKey="margin_pct" 
+                      name="Margin %"
+                      stroke="#f59e0b" 
+                      strokeWidth={2}
+                      dot={false}
+                    />
+                  </ComposedChart>
+                </ResponsiveContainer>
               </div>
             </div>
 
-            {/* Split Grid: Category Breakdown + Regional Stores */}
+            {/* Split Grid: Category Breakdown + Regional Performance */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Category Breakdown */}
+              {/* Category Breakdown Bar Chart */}
               <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
                 <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                  <h3 className="text-sm font-bold text-slate-900">Merchandising Category Contribution</h3>
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-900">Merchandising Category Revenue & Margin</h3>
+                    <p className="text-xs text-slate-500">Sales volume and profitability distribution</p>
+                  </div>
                   <button 
                     onClick={() => exportToCsv('retailiq_category_breakdown', categoryBreakdown)}
                     className="text-xs text-blue-600 hover:text-blue-800 flex items-center font-medium"
@@ -304,65 +463,57 @@ export default function App() {
                     <Download className="w-3.5 h-3.5 mr-1" /> Export
                   </button>
                 </div>
-                <div className="mt-4 space-y-4">
-                  {categoryBreakdown.map((cat, i) => {
-                    const pctOfTotal = ((cat.revenue / executiveKpis.total_revenue) * 100).toFixed(1);
-                    return (
-                      <div key={i} className="space-y-1.5">
-                        <div className="flex justify-between text-xs">
-                          <span className="font-semibold text-slate-800">{cat.category}</span>
-                          <span className="text-slate-600 font-medium">
-                            {formatCurrency(cat.revenue)} ({pctOfTotal}%) | {cat.margin_pct}% Margin
-                          </span>
-                        </div>
-                        <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                          <div 
-                            className={`h-full rounded-full ${
-                              cat.category === 'Technology' ? 'bg-blue-600' :
-                              cat.category === 'Furniture' ? 'bg-indigo-500' :
-                              cat.category === 'Apparel' ? 'bg-teal-500' : 'bg-amber-500'
-                            }`}
-                            style={{ width: `${pctOfTotal}%` }}
-                          ></div>
-                        </div>
-                      </div>
-                    );
-                  })}
+
+                <div className="mt-4 h-64">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={categoryBreakdown} layout="vertical" margin={{ top: 5, right: 30, left: 40, bottom: 5 }}>
+                      <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#f1f5f9" />
+                      <XAxis type="number" tickFormatter={formatCurrencyCompact} tick={{ fontSize: 11, fill: '#64748b' }} axisLine={false} />
+                      <YAxis type="category" dataKey="category" tick={{ fontSize: 11, fill: '#334155' }} axisLine={false} />
+                      <Tooltip 
+                        formatter={(val, name) => [name === 'revenue' ? formatCurrency(val) : `${val}%`, name === 'revenue' ? 'Revenue' : 'Margin']}
+                        contentStyle={{ backgroundColor: '#0f172a', borderColor: '#1e293b', borderRadius: '8px', color: '#fff', fontSize: '12px' }}
+                      />
+                      <Bar dataKey="revenue" name="Revenue" radius={[0, 4, 4, 0]} maxBarSize={22}>
+                        {categoryBreakdown.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={CATEGORY_COLORS[index % CATEGORY_COLORS.length]} />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
                 </div>
               </div>
 
               {/* Regional Sales Breakdown */}
               <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
                 <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                  <h3 className="text-sm font-bold text-slate-900">Regional & Channel Performance</h3>
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-900">Regional Performance</h3>
+                    <p className="text-xs text-slate-500">Net revenue and operating gross profit by region</p>
+                  </div>
                   <button 
-                    onClick={() => exportToCsv('retailiq_regional_breakdown', regionalBreakdown)}
+                    onClick={() => exportToCsv('retailiq_regional_breakdown', regionalSummary)}
                     className="text-xs text-blue-600 hover:text-blue-800 flex items-center font-medium"
                   >
                     <Download className="w-3.5 h-3.5 mr-1" /> Export
                   </button>
                 </div>
-                <div className="mt-3 overflow-x-auto">
-                  <table className="w-full text-left text-xs">
-                    <thead>
-                      <tr className="border-b border-slate-100 text-slate-400 font-semibold uppercase tracking-wider">
-                        <th className="py-2">Region</th>
-                        <th className="py-2">Store Type</th>
-                        <th className="py-2 text-right">Revenue</th>
-                        <th className="py-2 text-right">Profit</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100">
-                      {regionalBreakdown.slice(0, 6).map((reg, i) => (
-                        <tr key={i} className="hover:bg-slate-50">
-                          <td className="py-2.5 font-medium text-slate-800">{reg.region}</td>
-                          <td className="py-2.5 text-slate-600">{reg.store_type}</td>
-                          <td className="py-2.5 text-right font-semibold text-slate-900">{formatCurrency(reg.revenue)}</td>
-                          <td className="py-2.5 text-right text-emerald-600 font-medium">{formatCurrency(reg.profit)}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+
+                <div className="mt-4 h-64">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={regionalSummary} margin={{ top: 10, right: 20, left: 10, bottom: 5 }}>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                      <XAxis dataKey="region" tick={{ fontSize: 11, fill: '#334155' }} axisLine={{ stroke: '#cbd5e1' }} />
+                      <YAxis tickFormatter={formatCurrencyCompact} tick={{ fontSize: 11, fill: '#64748b' }} axisLine={false} />
+                      <Tooltip 
+                        formatter={(val) => [formatCurrency(val)]}
+                        contentStyle={{ backgroundColor: '#0f172a', borderColor: '#1e293b', borderRadius: '8px', color: '#fff', fontSize: '12px' }}
+                      />
+                      <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '10px' }} />
+                      <Bar dataKey="revenue" name="Net Revenue" fill="#2563eb" radius={[4, 4, 0, 0]} maxBarSize={30} />
+                      <Bar dataKey="profit" name="Gross Profit" fill="#10b981" radius={[4, 4, 0, 0]} maxBarSize={30} />
+                    </BarChart>
+                  </ResponsiveContainer>
                 </div>
               </div>
             </div>
@@ -374,7 +525,7 @@ export default function App() {
           <div className="space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
               <div>
-                <h2 className="text-base font-bold text-slate-900">Time-Series Revenue Mart (PostgreSQL SQL 03)</h2>
+                <h2 className="text-base font-bold text-slate-900">Time-Series Revenue Mart (SQL Window Functions)</h2>
                 <p className="text-xs text-slate-500">Calculates MoM Growth %, Prior Year SPLY, and YTD Cumulative Running Revenue</p>
               </div>
               <div className="flex items-center space-x-3">
@@ -398,6 +549,32 @@ export default function App() {
               </div>
             </div>
 
+            {/* MoM Variance Chart */}
+            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+              <h3 className="text-sm font-bold text-slate-900 mb-1">Month-over-Month (MoM) Revenue Growth Rate %</h3>
+              <p className="text-xs text-slate-500 mb-4">Calculated dynamically using <code className="text-blue-700">LAG(net_revenue, 1) OVER (ORDER BY year, month)</code></p>
+              <div className="h-64 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={monthlyTrendsWithMom} margin={{ top: 10, right: 20, left: 10, bottom: 20 }}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                    <XAxis dataKey="period_label" tick={{ fontSize: 10, fill: '#64748b' }} interval={2} axisLine={{ stroke: '#cbd5e1' }} />
+                    <YAxis tickFormatter={(v) => `${v}%`} tick={{ fontSize: 11, fill: '#64748b' }} axisLine={false} />
+                    <ReferenceLine y={0} stroke="#94a3b8" />
+                    <Tooltip 
+                      formatter={(val) => [`${val}%`, 'MoM Growth']}
+                      contentStyle={{ backgroundColor: '#0f172a', borderColor: '#1e293b', borderRadius: '8px', color: '#fff', fontSize: '12px' }}
+                    />
+                    <Bar dataKey="mom_growth_pct" name="MoM Growth %" radius={[2, 2, 0, 0]} maxBarSize={14}>
+                      {monthlyTrendsWithMom.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.mom_growth_pct >= 0 ? '#10b981' : '#f43f5e'} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            {/* Tabular Data View */}
             <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
@@ -438,7 +615,7 @@ export default function App() {
                   <span className="px-2 py-0.5 bg-blue-200 text-blue-800 text-[11px] font-bold rounded">Core Drivers</span>
                 </div>
                 <p className="mt-2 text-xl font-bold text-blue-950">28 Products (18.9%)</p>
-                <p className="text-xs text-blue-800 mt-1">Generates $53.7M (80.0% of total catalog revenue)</p>
+                <p className="text-xs text-blue-800 mt-1">Generates $53.7M (80.0% of catalog revenue)</p>
               </div>
 
               <div className="bg-amber-50 border border-amber-200 p-4 rounded-xl">
@@ -457,6 +634,56 @@ export default function App() {
                 </div>
                 <p className="mt-2 text-xl font-bold text-slate-900">86 Products (58.1%)</p>
                 <p className="text-xs text-slate-600 mt-1">Ties up working capital with only $3.3M revenue</p>
+              </div>
+            </div>
+
+            {/* Pareto Composed Chart */}
+            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-3">
+                <div>
+                  <h3 className="text-sm font-bold text-slate-900">Pareto 80/20 Cumulative Revenue Curve</h3>
+                  <p className="text-xs text-slate-500">Top 30 SKUs ranked by revenue against 80% cumulative threshold</p>
+                </div>
+              </div>
+              <div className="h-72 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <ComposedChart data={productPareto.slice(0, 30)} margin={{ top: 10, right: 20, left: 10, bottom: 25 }}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                    <XAxis 
+                      dataKey="product_sku" 
+                      tick={{ fontSize: 10, fill: '#64748b' }} 
+                      angle={-45} 
+                      textAnchor="end" 
+                      axisLine={{ stroke: '#cbd5e1' }}
+                    />
+                    <YAxis 
+                      yAxisId="left" 
+                      tickFormatter={formatCurrencyCompact} 
+                      tick={{ fontSize: 11, fill: '#64748b' }} 
+                      axisLine={false} 
+                    />
+                    <YAxis 
+                      yAxisId="right" 
+                      orientation="right" 
+                      tickFormatter={(v) => `${v}%`} 
+                      domain={[0, 100]} 
+                      tick={{ fontSize: 11, fill: '#2563eb' }} 
+                      axisLine={false} 
+                    />
+                    <Tooltip 
+                      formatter={(val, name) => [name === 'revenue' ? formatCurrency(val) : `${val}%`, name === 'revenue' ? 'Net Revenue' : 'Cumulative %']}
+                      contentStyle={{ backgroundColor: '#0f172a', borderColor: '#1e293b', borderRadius: '8px', color: '#fff', fontSize: '12px' }}
+                    />
+                    <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '10px' }} />
+                    <ReferenceLine yAxisId="right" y={80} stroke="#ef4444" strokeDasharray="4 4" label={{ value: '80% Cutoff', fill: '#ef4444', fontSize: 10 }} />
+                    <Bar yAxisId="left" dataKey="revenue" name="Net Revenue" fill="#3b82f6" radius={[3, 3, 0, 0]} maxBarSize={18}>
+                      {productPareto.slice(0, 30).map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.pareto_class === 'Class A' ? '#2563eb' : '#f59e0b'} />
+                      ))}
+                    </Bar>
+                    <Line yAxisId="right" type="monotone" dataKey="cum_pct" name="Cumulative Sales %" stroke="#ef4444" strokeWidth={2} dot={{ r: 2 }} />
+                  </ComposedChart>
+                </ResponsiveContainer>
               </div>
             </div>
 
@@ -542,12 +769,13 @@ export default function App() {
         {/* TAB 4: CUSTOMER RFM & COHORTS */}
         {activeTab === 'rfm' && (
           <div className="space-y-6">
+            {/* RFM Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {rfmPersonas.slice(0, 4).map((p, i) => (
                 <div key={i} className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
                   <div className="flex items-center justify-between text-xs">
                     <span className="font-bold text-slate-900">{p.persona}</span>
-                    <span className="text-slate-500">{formatNumber(p.customer_count)} users</span>
+                    <span className="text-slate-500 font-medium">{formatNumber(p.customer_count)} accounts</span>
                   </div>
                   <div className="mt-2 text-xl font-bold text-blue-700">
                     {formatCurrency(p.total_segment_revenue)}
@@ -559,33 +787,97 @@ export default function App() {
               ))}
             </div>
 
-            {/* RFM Full Persona Table */}
+            {/* RFM Persona Bar Chart */}
+            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+              <h3 className="text-sm font-bold text-slate-900 mb-1">Customer Revenue Share by RFM Persona</h3>
+              <p className="text-xs text-slate-500 mb-4">Total monetary contribution by lifecycle cohort</p>
+              <div className="h-64 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={rfmPersonas} margin={{ top: 10, right: 20, left: 20, bottom: 35 }}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                    <XAxis 
+                      dataKey="persona" 
+                      tick={{ fontSize: 10, fill: '#334155' }} 
+                      angle={-30} 
+                      textAnchor="end" 
+                      axisLine={{ stroke: '#cbd5e1' }}
+                    />
+                    <YAxis tickFormatter={formatCurrencyCompact} tick={{ fontSize: 11, fill: '#64748b' }} axisLine={false} />
+                    <Tooltip 
+                      formatter={(val) => [formatCurrency(val), 'Segment Revenue']}
+                      contentStyle={{ backgroundColor: '#0f172a', borderColor: '#1e293b', borderRadius: '8px', color: '#fff', fontSize: '12px' }}
+                    />
+                    <Bar dataKey="total_segment_revenue" name="Revenue" fill="#2563eb" radius={[4, 4, 0, 0]} maxBarSize={28}>
+                      {rfmPersonas.map((entry, index) => (
+                        <Cell 
+                          key={`cell-${index}`} 
+                          fill={
+                            entry.persona === 'Champions' ? '#1d4ed8' :
+                            entry.persona === 'Loyal Customers' ? '#3b82f6' :
+                            entry.persona.includes('Risk') ? '#ef4444' :
+                            entry.persona.includes('Hibernating') ? '#94a3b8' : '#60a5fa'
+                          } 
+                        />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            {/* True Cohort Retention Heatmap Matrix */}
             <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
-              <h3 className="text-sm font-bold text-slate-900 mb-3">Customer Lifecycle Segmentation (NTILE 5)</h3>
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-3">
+                <div>
+                  <h3 className="text-sm font-bold text-slate-900">Cohort Retention Heatmap (%)</h3>
+                  <p className="text-xs text-slate-500">Customer order retention from Month 0 to Month 8</p>
+                </div>
+                <button
+                  onClick={() => exportToCsv('retailiq_cohort_retention', cohortRetention)}
+                  className="text-xs text-blue-600 hover:text-blue-800 flex items-center font-medium"
+                >
+                  <Download className="w-3.5 h-3.5 mr-1" /> Export
+                </button>
+              </div>
+
               <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs">
+                <table className="w-full text-center text-xs">
                   <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 font-semibold uppercase">
                     <tr>
-                      <th className="py-2.5 px-3">Persona Group</th>
-                      <th className="py-2.5 px-3">Total Accounts</th>
-                      <th className="py-2.5 px-3 text-right">Avg Customer Spend</th>
-                      <th className="py-2.5 px-3 text-right">Segment Net Sales</th>
-                      <th className="py-2.5 px-3 text-right">Revenue Share</th>
+                      <th className="py-2.5 px-3 text-left">Cohort</th>
+                      <th className="py-2.5 px-3 text-left">Users</th>
+                      <th className="py-2.5 px-2">M0</th>
+                      <th className="py-2.5 px-2">M1</th>
+                      <th className="py-2.5 px-2">M2</th>
+                      <th className="py-2.5 px-2">M3</th>
+                      <th className="py-2.5 px-2">M4</th>
+                      <th className="py-2.5 px-2">M5</th>
+                      <th className="py-2.5 px-2">M6</th>
+                      <th className="py-2.5 px-2">M7</th>
+                      <th className="py-2.5 px-2">M8</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
-                    {rfmPersonas.map((p, idx) => {
-                      const share = ((p.total_segment_revenue / executiveKpis.total_revenue) * 100).toFixed(1);
-                      return (
-                        <tr key={idx} className="hover:bg-slate-50">
-                          <td className="py-2.5 px-3 font-semibold text-slate-900">{p.persona}</td>
-                          <td className="py-2.5 px-3 text-slate-700">{formatNumber(p.customer_count)}</td>
-                          <td className="py-2.5 px-3 text-right text-slate-800">{formatCurrency(p.avg_monetary)}</td>
-                          <td className="py-2.5 px-3 text-right font-bold text-slate-900">{formatCurrency(p.total_segment_revenue)}</td>
-                          <td className="py-2.5 px-3 text-right font-medium text-blue-700">{share}%</td>
-                        </tr>
-                      );
-                    })}
+                    {cohortMatrix.map((c, i) => (
+                      <tr key={i} className="hover:bg-slate-50">
+                        <td className="py-2 px-3 text-left font-bold text-slate-800">{c.cohort}</td>
+                        <td className="py-2 px-3 text-left text-slate-500 font-medium">{formatNumber(c.total_users)}</td>
+                        {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((m) => {
+                          const rate = c.periods[m];
+                          if (rate === undefined) return <td key={m} className="py-2 px-2 text-slate-300">-</td>;
+                          const bgIntensity = rate >= 90 ? 'bg-blue-600 text-white font-bold' :
+                                              rate >= 45 ? 'bg-blue-200 text-blue-900 font-semibold' :
+                                              rate >= 35 ? 'bg-blue-100 text-blue-800' : 'bg-slate-100 text-slate-600';
+                          return (
+                            <td key={m} className="py-1 px-1">
+                              <span className={`inline-block w-full py-1 rounded text-[11px] ${bgIntensity}`}>
+                                {rate}%
+                              </span>
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>
@@ -640,7 +932,7 @@ export default function App() {
             <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
               <h2 className="text-base font-bold text-slate-900">Dynamic Financial What-If Scenario Simulator</h2>
               <p className="text-xs text-slate-500 mt-1">
-                Mirrors the logic in <code className="text-blue-700">RetailIQ_Financial_Model.xlsx</code>.
+                Mirrors the sensitivity calculations in <code className="text-blue-700">RetailIQ_Financial_Model.xlsx</code>.
                 Simulate price elasticity against unit volumes and supplier cost inflation.
               </p>
 
@@ -712,7 +1004,7 @@ export default function App() {
 
               {/* Dynamic Comparison Matrix */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
-                <div className="p-4 rounded-lg border border-slate-200 bg-white">
+                <div className="p-4 rounded-lg border border-slate-200 bg-white shadow-sm">
                   <span className="text-xs text-slate-400 font-semibold uppercase">Projected Selling Price</span>
                   <div className="mt-1 text-xl font-bold text-slate-900">
                     {formatCurrency(whatIfResults.newPrice)}
@@ -720,7 +1012,7 @@ export default function App() {
                   <span className="text-xs text-slate-500">Base: $250.00</span>
                 </div>
 
-                <div className="p-4 rounded-lg border border-slate-200 bg-white">
+                <div className="p-4 rounded-lg border border-slate-200 bg-white shadow-sm">
                   <span className="text-xs text-slate-400 font-semibold uppercase">Projected Sales Volume</span>
                   <div className="mt-1 text-xl font-bold text-slate-900">
                     {formatNumber(whatIfResults.newVolume)} units
@@ -730,7 +1022,7 @@ export default function App() {
                   </span>
                 </div>
 
-                <div className="p-4 rounded-lg border border-slate-200 bg-white">
+                <div className="p-4 rounded-lg border border-slate-200 bg-white shadow-sm">
                   <span className="text-xs text-slate-400 font-semibold uppercase">Projected Gross Profit</span>
                   <div className="mt-1 text-xl font-bold text-slate-900">
                     {formatCurrency(whatIfResults.projectedProfit)}
@@ -740,12 +1032,33 @@ export default function App() {
                   </span>
                 </div>
 
-                <div className="p-4 rounded-lg border border-slate-200 bg-white">
+                <div className="p-4 rounded-lg border border-slate-200 bg-white shadow-sm">
                   <span className="text-xs text-slate-400 font-semibold uppercase">Projected Gross Margin</span>
                   <div className="mt-1 text-xl font-bold text-blue-700">
                     {whatIfResults.projectedMargin.toFixed(2)}%
                   </div>
                   <span className="text-xs text-slate-500">Base: {whatIfResults.baseMargin.toFixed(2)}%</span>
+                </div>
+              </div>
+
+              {/* Comparison Visual Chart */}
+              <div className="mt-6 pt-4 border-t border-slate-100">
+                <h4 className="text-xs font-bold text-slate-800 uppercase mb-3">Baseline vs Projected Financial Impact</h4>
+                <div className="h-64 w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={whatIfChartData} margin={{ top: 10, right: 20, left: 20, bottom: 5 }}>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                      <XAxis dataKey="metric" tick={{ fontSize: 11, fill: '#334155' }} axisLine={{ stroke: '#cbd5e1' }} />
+                      <YAxis tickFormatter={formatCurrencyCompact} tick={{ fontSize: 11, fill: '#64748b' }} axisLine={false} />
+                      <Tooltip 
+                        formatter={(val) => [formatCurrency(val)]}
+                        contentStyle={{ backgroundColor: '#0f172a', borderColor: '#1e293b', borderRadius: '8px', color: '#fff', fontSize: '12px' }}
+                      />
+                      <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '10px' }} />
+                      <Bar dataKey="Baseline" fill="#94a3b8" radius={[4, 4, 0, 0]} maxBarSize={40} />
+                      <Bar dataKey="Projected" fill="#2563eb" radius={[4, 4, 0, 0]} maxBarSize={40} />
+                    </BarChart>
+                  </ResponsiveContainer>
                 </div>
               </div>
             </div>
@@ -758,7 +1071,7 @@ export default function App() {
             <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
               <h2 className="text-base font-bold text-slate-900">PostgreSQL Data Warehouse Architecture</h2>
               <p className="text-xs text-slate-500 mt-1">
-                Star schema structure with partitioned sales facts and optimized B-Tree and BRIN indexes.
+                Star schema structure with partitioned sales facts and indexed foreign keys.
               </p>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
