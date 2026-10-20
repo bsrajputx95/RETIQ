@@ -2,7 +2,7 @@
 
 Retail sales analytics workflow and data warehouse modeling transactional sales data using Python, Pandas, PostgreSQL, Power BI, and Excel.
 
-Live Web Dashboard: [Deployed on Vercel](https://retiq.vercel.app)
+Live Web Dashboard: [https://retiq-chi.vercel.app](https://retiq-chi.vercel.app)
 
 ---
 
