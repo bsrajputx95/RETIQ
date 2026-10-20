@@ -1,0 +1,20 @@
+pipeline:
+  name: "RetailIQ Analytics Pipeline"
+  version: "1.0.0"
+  batch_size: 25000
+  synthetic_generation:
+    num_customers: 2500
+    num_products: 150
+    num_stores: 12
+    num_orders: 50000
+    start_date: "2023-01-01"
+    end_date: "2026-09-30"
+    return_rate: 0.08
+  paths:
+    raw_dir: "data/raw"
+    processed_dir: "data/processed"
+    quarantine_dir: "data/quarantine"
+  validation:
+    max_acceptable_price: 10000.0
+    min_acceptable_price: 0.50
+    max_order_quantity: 500
