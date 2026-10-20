@@ -1,0 +1,149 @@
+product_id,product_sku,product_name,category,sub_category,unit_cost,standard_unit_price,supplier_name,is_discontinued
+1,SKU-TEC-0001,"Cain, Carson and Singleton Laptop Model-1",Technology,Laptops,588.48,769.45,Hodge-Booker,False
+2,SKU-TEC-0002,Houston and Sons Smartphone Model-2,Technology,Smartphones,457.96,660.91,Hopkins-Hughes,False
+3,SKU-TEC-0003,Beck-Green Accessorie Model-3,Technology,Accessories,493.48,782.39,Ritter and Sons,False
+4,SKU-TEC-0004,Ray-Gibbs Smartphone Model-4,Technology,Smartphones,686.18,1008.97,Lowery-Myers,False
+5,SKU-TEC-0005,Jordan LLC Smartphone Model-5,Technology,Smartphones,558.79,783.0,Hansen-Garcia,False
+6,SKU-TEC-0006,Summers Group Laptop Model-6,Technology,Laptops,637.28,993.57,"Martinez, Gilmore and Martinez",False
+7,SKU-TEC-0007,Morgan Group Printer Model-7,Technology,Printers,519.68,720.32,"Cain, Grant and Lopez",False
+8,SKU-TEC-0008,Christensen-Long Smartphone Model-8,Technology,Smartphones,206.69,312.79,Clark-Watkins,False
+9,SKU-TEC-0009,"Carlson, Smith and Mcmillan Laptop Model-9",Technology,Laptops,507.65,776.62,"Rowland, Brewer and Ward",False
+10,SKU-TEC-0010,Bradford and Sons Monitor Model-10,Technology,Monitors,191.44,261.14,"Love, King and Anderson",False
+11,SKU-TEC-0011,"Larsen, Garcia and Weaver Printer Model-11",Technology,Printers,132.3,196.43,Sanders-Burgess,False
+12,SKU-TEC-0012,Cox and Sons Printer Model-12,Technology,Printers,467.45,688.88,"Bass, Wong and Murphy",False
+13,SKU-TEC-0013,"Bradshaw, Price and Brown Monitor Model-13",Technology,Monitors,354.8,492.25,Estrada Inc,False
+14,SKU-TEC-0014,"Townsend, Brown and Meyers Laptop Model-14",Technology,Laptops,321.82,497.51,Jones-Jones,False
+15,SKU-TEC-0015,"Stevens, Hoffman and French Monitor Model-15",Technology,Monitors,179.75,267.06,"Hanson, Robertson and Taylor",False
+16,SKU-TEC-0016,Foley Inc Accessorie Model-16,Technology,Accessories,784.13,1142.13,Chambers PLC,False
+17,SKU-TEC-0017,"Taylor, Gallagher and Schmidt Smartphone Model-17",Technology,Smartphones,293.68,391.62,Wade-Bennett,True
+18,SKU-TEC-0018,"Weber, Duran and Parks Laptop Model-18",Technology,Laptops,188.27,281.03,"Wilkins, Farrell and Woods",False
+19,SKU-TEC-0019,Craig and Sons Monitor Model-19,Technology,Monitors,354.66,517.36,Brown Ltd,False
+20,SKU-TEC-0020,Moreno-Snyder Monitor Model-20,Technology,Monitors,350.81,461.32,Fry-Sanchez,False
+21,SKU-TEC-0021,Chase-Mcmillan Monitor Model-21,Technology,Monitors,601.68,887.98,Hardy-Jones,False
+22,SKU-TEC-0022,Martinez Inc Smartphone Model-22,Technology,Smartphones,489.48,695.73,"Payne, Koch and Smith",False
+23,SKU-TEC-0023,Christensen PLC Smartphone Model-23,Technology,Smartphones,191.55,295.89,"Riggs, Short and Martinez",False
+24,SKU-TEC-0024,Brown-Soto Monitor Model-24,Technology,Monitors,83.43,114.77,"Walker, Johnson and Lopez",False
+25,SKU-TEC-0025,Duran-Vaughn Laptop Model-25,Technology,Laptops,432.53,570.2,Lawson-Henderson,False
+26,SKU-TEC-0026,Stewart Ltd Printer Model-26,Technology,Printers,820.7,1171.06,"Garza, Gutierrez and Ford",False
+27,SKU-TEC-0027,Smith-Sanchez Printer Model-27,Technology,Printers,371.4,528.17,Harrington Ltd,False
+28,SKU-TEC-0028,Marquez Ltd Printer Model-28,Technology,Printers,435.85,557.42,Barrett LLC,False
+29,SKU-TEC-0029,Kramer PLC Laptop Model-29,Technology,Laptops,684.66,908.67,Mcclure Ltd,False
+30,SKU-TEC-0030,Trujillo-Buck Laptop Model-30,Technology,Laptops,262.63,377.7,James PLC,False
+31,SKU-TEC-0031,Murray LLC Smartphone Model-31,Technology,Smartphones,672.4,973.62,"Singleton, Bradley and Singleton",False
+32,SKU-TEC-0032,Mayer LLC Printer Model-32,Technology,Printers,485.28,625.83,Meadows Group,False
+33,SKU-TEC-0033,Scott-Sutton Laptop Model-33,Technology,Laptops,256.99,370.09,Wolf-Wright,False
+34,SKU-TEC-0034,"Soto, Wang and Blair Accessorie Model-34",Technology,Accessories,479.06,725.72,Hunter-Wiggins,False
+35,SKU-TEC-0035,Jones and Sons Printer Model-35,Technology,Printers,482.55,770.35,Williams LLC,False
+36,SKU-TEC-0036,Jacobs PLC Laptop Model-36,Technology,Laptops,636.15,940.73,Flores Group,False
+37,SKU-TEC-0037,Miller-Cook Smartphone Model-37,Technology,Smartphones,281.14,449.76,"Bailey, Leonard and Harrington",False
+38,SKU-FUR-0038,Wise Group Furnishing Model-38,Furniture,Furnishings,168.27,291.29,"Oneal, Deleon and Schmidt",False
+39,SKU-FUR-0039,"Williams, Nielsen and Ray Chair Model-39",Furniture,Chairs,247.58,444.9,"Hernandez, Reeves and Adams",False
+40,SKU-FUR-0040,Mckay-Mcdonald Desk Model-40,Furniture,Desks,144.45,241.06,Gutierrez Ltd,False
+41,SKU-FUR-0041,Foster-Johnson Bookcase Model-41,Furniture,Bookcases,437.47,702.2,Lee PLC,False
+42,SKU-FUR-0042,Jones-Hogan Furnishing Model-42,Furniture,Furnishings,124.69,170.78,Dean LLC,False
+43,SKU-FUR-0043,"Harvey, Bradley and Burns Desk Model-43",Furniture,Desks,416.09,708.48,Griffith PLC,False
+44,SKU-FUR-0044,Guzman LLC Table Model-44,Furniture,Tables,207.87,299.45,Farrell-Stewart,False
+45,SKU-FUR-0045,Jones-Nixon Table Model-45,Furniture,Tables,125.77,225.07,Scott Group,False
+46,SKU-FUR-0046,Fleming-Jones Bookcase Model-46,Furniture,Bookcases,180.2,258.35,Leonard-Huerta,False
+47,SKU-FUR-0047,Smith-Page Table Model-47,Furniture,Tables,493.47,809.12,Hernandez-Kelly,False
+48,SKU-FUR-0048,"Ford, Jordan and Garcia Chair Model-48",Furniture,Chairs,111.02,185.96,Vaughan-Carter,False
+49,SKU-FUR-0049,Harris Inc Furnishing Model-49,Furniture,Furnishings,463.45,832.47,Daniels LLC,False
+50,SKU-FUR-0050,Huber-Johnson Desk Model-50,Furniture,Desks,365.64,499.59,"Lyons, Lane and Martin",False
+51,SKU-FUR-0051,Gamble-Hansen Desk Model-51,Furniture,Desks,370.13,634.49,"Owens, Nixon and Roberson",False
+52,SKU-FUR-0052,Lloyd Inc Furnishing Model-52,Furniture,Furnishings,270.26,429.37,Vega-Boyd,False
+53,SKU-FUR-0053,Miller Ltd Bookcase Model-53,Furniture,Bookcases,332.52,494.65,Perez-Simmons,False
+54,SKU-FUR-0054,Farmer-Roberts Chair Model-54,Furniture,Chairs,335.13,583.15,Hernandez-Smith,False
+55,SKU-FUR-0055,Smith PLC Chair Model-55,Furniture,Chairs,231.28,387.37,Kirk-Pierce,False
+56,SKU-FUR-0056,Gardner LLC Bookcase Model-56,Furniture,Bookcases,254.61,393.12,"Jones, Maldonado and Moore",False
+57,SKU-FUR-0057,"Wolfe, Gill and Clark Table Model-57",Furniture,Tables,51.11,86.23,Nguyen-Moore,False
+58,SKU-FUR-0058,"Cross, Gomez and Davis Chair Model-58",Furniture,Chairs,378.92,579.45,"Smith, Krueger and Dyer",False
+59,SKU-FUR-0059,Palmer PLC Bookcase Model-59,Furniture,Bookcases,432.55,734.4,Barker-Mack,False
+60,SKU-FUR-0060,"Anderson, Patterson and Thompson Furnishing Model-60",Furniture,Furnishings,148.02,224.22,"Williams, Clark and Smith",False
+61,SKU-FUR-0061,Taylor-Allen Desk Model-61,Furniture,Desks,272.62,398.42,Hernandez Ltd,False
+62,SKU-FUR-0062,"Hall, Thornton and Lee Bookcase Model-62",Furniture,Bookcases,201.99,320.96,Vega-Wiley,False
+63,SKU-FUR-0063,"Hill, Forbes and Rivera Table Model-63",Furniture,Tables,433.59,734.57,Andrews Group,False
+64,SKU-FUR-0064,"Thomas, Frye and Johnson Chair Model-64",Furniture,Chairs,70.67,114.0,"Rodriguez, Perry and Sanders",False
+65,SKU-FUR-0065,Henderson Group Furnishing Model-65,Furniture,Furnishings,57.33,101.17,"Cruz, Grant and Acosta",False
+66,SKU-FUR-0066,Smith-Clark Desk Model-66,Furniture,Desks,248.58,323.24,King LLC,True
+67,SKU-FUR-0067,Brown-Smith Furnishing Model-67,Furniture,Furnishings,141.04,231.91,Graham LLC,False
+68,SKU-FUR-0068,"Marshall, Johnson and Payne Desk Model-68",Furniture,Desks,446.97,648.52,Mccormick-Rivera,False
+69,SKU-FUR-0069,Garcia Ltd Bookcase Model-69,Furniture,Bookcases,92.0,136.18,"Davis, Russell and Thomas",False
+70,SKU-FUR-0070,Greer-Jackson Chair Model-70,Furniture,Chairs,217.33,380.74,Willis LLC,True
+71,SKU-FUR-0071,Wilson Inc Desk Model-71,Furniture,Desks,73.3,118.22,Meyers-Pena,False
+72,SKU-FUR-0072,Gilbert-Good Desk Model-72,Furniture,Desks,243.15,327.18,Garcia-Higgins,False
+73,SKU-FUR-0073,Martinez and Sons Chair Model-73,Furniture,Chairs,50.49,77.67,"Rivera, Moore and Sanchez",False
+74,SKU-FUR-0074,Anderson PLC Desk Model-74,Furniture,Desks,317.16,494.68,Nguyen PLC,False
+75,SKU-OFF-0075,Riggs Ltd Art Model-75,Office Supplies,Art,2.4,4.7,Fields-Young,False
+76,SKU-OFF-0076,Singh-Blevins Binder Model-76,Office Supplies,Binders,44.49,77.32,"Torres, Carney and Thompson",False
+77,SKU-OFF-0077,Reese-Rhodes Paper Model-77,Office Supplies,Paper,22.54,35.68,"Diaz, Ingram and Miller",False
+78,SKU-OFF-0078,Parsons-Montoya Binder Model-78,Office Supplies,Binders,33.42,49.53,Hunter-Graham,False
+79,SKU-OFF-0079,Ford Ltd Storage Model-79,Office Supplies,Storage,17.81,29.2,"Arnold, Thompson and Williams",False
+80,SKU-OFF-0080,Bird LLC Art Model-80,Office Supplies,Art,35.26,70.61,"Matthews, Montes and Smith",False
+81,SKU-OFF-0081,Lang-Ferguson Paper Model-81,Office Supplies,Paper,29.59,57.46,"Smith, Malone and Ruiz",False
+82,SKU-OFF-0082,"Reynolds, Lloyd and Atkinson Binder Model-82",Office Supplies,Binders,24.81,34.9,Serrano-Anderson,False
+83,SKU-OFF-0083,"Frey, Robinson and Bernard Fastener Model-83",Office Supplies,Fasteners,9.06,15.23,Moyer-Tate,False
+84,SKU-OFF-0084,"Simon, Carlson and White Paper Model-84",Office Supplies,Paper,29.01,44.13,Doyle-Gomez,False
+85,SKU-OFF-0085,Ramos-Wallace Art Model-85,Office Supplies,Art,28.49,49.97,"Lawson, Phelps and Rodriguez",False
+86,SKU-OFF-0086,Glover PLC Paper Model-86,Office Supplies,Paper,5.73,8.48,"Walker, Erickson and Blake",False
+87,SKU-OFF-0087,Jenkins-Thomas Binder Model-87,Office Supplies,Binders,27.35,46.69,Nguyen-Parrish,False
+88,SKU-OFF-0088,Miller Group Art Model-88,Office Supplies,Art,15.52,23.46,Dunn LLC,False
+89,SKU-OFF-0089,"Hudson, Buck and Williams Storage Model-89",Office Supplies,Storage,29.72,47.51,Humphrey Ltd,False
+90,SKU-OFF-0090,White and Sons Appliance Model-90,Office Supplies,Appliances,27.8,52.43,Gray PLC,False
+91,SKU-OFF-0091,"Frank, Brown and Sexton Fastener Model-91",Office Supplies,Fasteners,3.15,6.54,Nelson Group,True
+92,SKU-OFF-0092,"Goodman, Anderson and Romero Storage Model-92",Office Supplies,Storage,10.83,20.42,"Beasley, Willis and Griffith",False
+93,SKU-OFF-0093,Mcdaniel Group Paper Model-93,Office Supplies,Paper,34.16,55.9,Myers-Rodriguez,False
+94,SKU-OFF-0094,Adkins Ltd Binder Model-94,Office Supplies,Binders,35.7,72.65,"Munoz, Fowler and Ray",False
+95,SKU-OFF-0095,"Martinez, Garcia and Escobar Paper Model-95",Office Supplies,Paper,23.28,34.69,Dominguez-Donovan,True
+96,SKU-OFF-0096,Clark Ltd Art Model-96,Office Supplies,Art,29.44,42.89,Goodman-Macias,False
+97,SKU-OFF-0097,"Gomez, Poole and Palmer Binder Model-97",Office Supplies,Binders,44.44,95.42,"Day, Harding and Valencia",False
+98,SKU-OFF-0098,"Sanders, Pearson and Payne Paper Model-98",Office Supplies,Paper,18.63,38.59,Parsons-Costa,False
+99,SKU-OFF-0099,Foster-Sanchez Art Model-99,Office Supplies,Art,17.71,34.47,"Blankenship, Carroll and Newman",False
+100,SKU-OFF-0100,Young-Matthews Art Model-100,Office Supplies,Art,43.04,86.78,"Aguilar, Carr and Logan",True
+101,SKU-OFF-0101,"Valdez, Phillips and Hill Binder Model-101",Office Supplies,Binders,27.26,38.46,Sutton-Day,False
+102,SKU-OFF-0102,Kane-Collins Paper Model-102,Office Supplies,Paper,3.71,5.37,Horn Inc,False
+103,SKU-OFF-0103,Powell-Whitehead Art Model-103,Office Supplies,Art,23.78,45.25,Manning and Sons,False
+104,SKU-OFF-0104,Bowman-Howe Appliance Model-104,Office Supplies,Appliances,34.99,60.84,Pena-Evans,False
+105,SKU-OFF-0105,Greer-Holder Art Model-105,Office Supplies,Art,5.54,10.13,Norris Inc,False
+106,SKU-OFF-0106,"Green, Peterson and Pearson Appliance Model-106",Office Supplies,Appliances,8.57,12.57,"Clark, Carr and Rivera",False
+107,SKU-OFF-0107,"Walsh, Atkins and Yang Binder Model-107",Office Supplies,Binders,23.99,37.49,Burnett-Padilla,False
+108,SKU-OFF-0108,"Burch, Cox and Wyatt Paper Model-108",Office Supplies,Paper,25.06,42.92,Romero-Walker,False
+109,SKU-OFF-0109,"Crawford, Butler and Andersen Fastener Model-109",Office Supplies,Fasteners,34.82,66.85,"Jones, Woods and Parker",False
+110,SKU-OFF-0110,Ritter Ltd Fastener Model-110,Office Supplies,Fasteners,4.84,9.48,Burns Ltd,False
+111,SKU-OFF-0111,Brown Group Fastener Model-111,Office Supplies,Fasteners,43.0,68.41,"Santiago, Drake and Larsen",False
+112,SKU-APP-0112,Bernard-Davis Outerwear Model-112,Apparel,Outerwear,16.9,32.69,"Walsh, Lee and Sandoval",False
+113,SKU-APP-0113,"Sims, Vasquez and Nichols Casual Wear Model-113",Apparel,Casual Wear,58.98,91.72,Silva-Hernandez,False
+114,SKU-APP-0114,Baldwin PLC Outerwear Model-114,Apparel,Outerwear,19.56,43.19,Campbell-Young,False
+115,SKU-APP-0115,Ortiz PLC Footwear Model-115,Apparel,Footwear,23.11,56.69,"Peterson, Finley and Cook",False
+116,SKU-APP-0116,Luna and Sons Accessorie Model-116,Apparel,Accessories,51.38,119.33,Hubbard and Sons,False
+117,SKU-APP-0117,"Owen, Edwards and Moore Sportswear Model-117",Apparel,Sportswear,23.36,38.01,Edwards Ltd,False
+118,SKU-APP-0118,"Rivera, Wilson and Dean Sportswear Model-118",Apparel,Sportswear,68.63,111.05,Baker Ltd,False
+119,SKU-APP-0119,Lopez and Sons Footwear Model-119,Apparel,Footwear,36.8,71.0,Adams Group,False
+120,SKU-APP-0120,Carter PLC Accessorie Model-120,Apparel,Accessories,15.11,33.43,Mercado-Richards,False
+121,SKU-APP-0121,"Kelly, Richardson and Neal Accessorie Model-121",Apparel,Accessories,60.2,120.17,Gentry and Sons,False
+122,SKU-APP-0122,Williams Inc Accessorie Model-122,Apparel,Accessories,38.81,77.6,King-Lee,False
+123,SKU-APP-0123,Baker-Mahoney Accessorie Model-123,Apparel,Accessories,23.35,38.7,Elliott-Lloyd,False
+124,SKU-APP-0124,Rodriguez-Moore Footwear Model-124,Apparel,Footwear,81.54,177.28,"Elliott, Ho and Harper",False
+125,SKU-APP-0125,"Hernandez, Rhodes and Campos Footwear Model-125",Apparel,Footwear,28.27,56.79,Cameron LLC,False
+126,SKU-APP-0126,Kim Group Footwear Model-126,Apparel,Footwear,78.7,119.02,Escobar and Sons,False
+127,SKU-APP-0127,Escobar PLC Footwear Model-127,Apparel,Footwear,47.74,89.89,"Young, Mckinney and Johnson",False
+128,SKU-APP-0128,Phillips-Barnes Outerwear Model-128,Apparel,Outerwear,24.32,59.84,"Gomez, Lambert and Zuniga",False
+129,SKU-APP-0129,Wood-Shepherd Footwear Model-129,Apparel,Footwear,54.23,130.91,Carpenter-Williams,False
+130,SKU-APP-0130,Lewis-Cook Casual Wear Model-130,Apparel,Casual Wear,27.96,48.88,Porter Group,False
+131,SKU-APP-0131,"Obrien, Chambers and Livingston Sportswear Model-131",Apparel,Sportswear,31.7,50.02,Hall and Sons,False
+132,SKU-APP-0132,Ortiz-Andersen Sportswear Model-132,Apparel,Sportswear,19.55,42.49,"Cummings, Brown and Gregory",False
+133,SKU-APP-0133,Johnson-Stone Footwear Model-133,Apparel,Footwear,24.35,56.11,"Harmon, Sanchez and Cunningham",False
+134,SKU-APP-0134,"Guerrero, Weiss and Thomas Footwear Model-134",Apparel,Footwear,86.33,135.45,Wu-Hart,True
+135,SKU-APP-0135,Arroyo and Sons Casual Wear Model-135,Apparel,Casual Wear,79.28,180.25,Brown Group,False
+136,SKU-APP-0136,Rush-Rhodes Sportswear Model-136,Apparel,Sportswear,36.18,74.28,Garcia-Mejia,False
+137,SKU-APP-0137,Reynolds Group Footwear Model-137,Apparel,Footwear,39.51,70.79,Hardin Inc,False
+138,SKU-APP-0138,Gregory-Thompson Sportswear Model-138,Apparel,Sportswear,69.17,120.53,Clark and Sons,False
+139,SKU-APP-0139,Parker-Johnson Sportswear Model-139,Apparel,Sportswear,57.34,114.3,Greene-Shannon,False
+140,SKU-APP-0140,Reyes Ltd Outerwear Model-140,Apparel,Outerwear,68.6,140.39,Arnold and Sons,False
+141,SKU-APP-0141,"Young, Parks and Hall Outerwear Model-141",Apparel,Outerwear,22.05,53.63,"Reid, Combs and Yang",False
+142,SKU-APP-0142,Lane Group Footwear Model-142,Apparel,Footwear,28.64,52.88,"Lynch, Rodriguez and Horn",False
+143,SKU-APP-0143,Johnson Inc Footwear Model-143,Apparel,Footwear,86.08,129.25,Thompson Group,False
+144,SKU-APP-0144,Glenn PLC Casual Wear Model-144,Apparel,Casual Wear,77.92,173.54,Wilkerson PLC,False
+145,SKU-APP-0145,Pearson Group Footwear Model-145,Apparel,Footwear,26.42,65.6,"Ramirez, Gibson and Brown",False
+146,SKU-APP-0146,Oliver-Nguyen Casual Wear Model-146,Apparel,Casual Wear,49.36,77.0,"Weaver, Small and Mccormick",False
+147,SKU-APP-0147,"Mahoney, Brown and Lee Outerwear Model-147",Apparel,Outerwear,66.93,106.62,Steele PLC,False
+148,SKU-APP-0148,"Burgess, Johnson and Miller Outerwear Model-148",Apparel,Outerwear,81.78,165.18,Fisher PLC,False

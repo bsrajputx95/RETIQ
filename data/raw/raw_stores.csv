@@ -1,0 +1,13 @@
+store_id,store_name,store_type,region,city,state,square_footage,opening_date
+1,RetailIQ Flagship Store - East #1,Flagship Store,East,West Jonathanchester,MN,18418.63,2020-05-14
+2,RetailIQ Mall Outlet - West #2,Mall Outlet,West,Derrickview,NM,13086.08,2021-12-24
+3,RetailIQ Express Store - Central #3,Express Store,Central,Smithshire,MT,15776.95,2019-08-15
+4,RetailIQ E-Commerce Web - South #4,E-Commerce Web,South,Lake Ronaldview,NV,0.0,2021-09-15
+5,RetailIQ Mobile App - East #5,Mobile App,East,Lake Courtney,PW,0.0,2020-03-30
+6,RetailIQ Flagship Store - West #6,Flagship Store,West,Gregorymouth,IL,16021.71,2022-02-08
+7,RetailIQ E-Commerce Web - Central #7,E-Commerce Web,Central,Pierceview,NJ,0.0,2021-09-21
+8,RetailIQ Mall Outlet - South #8,Mall Outlet,South,Kelleyside,KS,9416.87,2020-09-08
+9,RetailIQ E-Commerce Web - East #9,E-Commerce Web,East,South Adamview,MT,0.0,2020-08-16
+10,RetailIQ Express Store - West #10,Express Store,West,Timothymouth,WI,12960.67,2021-02-22
+11,RetailIQ Flagship Store - Central #11,Flagship Store,Central,South Christopherhaven,NY,23758.2,2021-09-10
+12,RetailIQ Mobile App - South #12,Mobile App,South,Ashleyberg,ND,0.0,2021-11-04
