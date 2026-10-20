@@ -1,0 +1,55 @@
+// ============================================================================
+// RetailIQ: Core Sales & Profitability DAX Measures
+// ============================================================================
+
+// 1. Total Gross Revenue
+Total Gross Revenue = 
+SUM(fact_sales[gross_sales_amount])
+
+// 2. Total Net Revenue (After standard discounts)
+Total Net Revenue = 
+SUM(fact_sales[net_sales_amount])
+
+// 3. Total Discounts Awarded
+Total Discounts = 
+SUM(fact_sales[discount_amount])
+
+// 4. Average Discount %
+Discount Rate % = 
+DIVIDE([Total Discounts], [Total Gross Revenue], 0)
+
+// 5. Total Cost of Goods Sold (COGS)
+Total COGS = 
+SUM(fact_sales[cogs_amount])
+
+// 6. Total Gross Profit
+Total Gross Profit = 
+[Total Net Revenue] - [Total COGS]
+
+// 7. Gross Profit Margin %
+Gross Margin % = 
+DIVIDE([Total Gross Profit], [Total Net Revenue], 0)
+
+// 8. Total Order Count (Distinct Orders)
+Total Orders = 
+DISTINCTCOUNT(fact_sales[order_id])
+
+// 9. Total Units Sold
+Total Units Sold = 
+SUM(fact_sales[order_quantity])
+
+// 10. Average Order Value (AOV)
+Average Order Value = 
+DIVIDE([Total Net Revenue], [Total Orders], 0)
+
+// 11. Average Basket Size (Units per Order)
+Average Basket Size = 
+DIVIDE([Total Units Sold], [Total Orders], 0)
+
+// 12. Total Return Instances
+Total Returns = 
+COUNT(fact_returns[return_id])
+
+// 13. Return Rate %
+Return Rate % = 
+DIVIDE([Total Returns], [Total Orders], 0)

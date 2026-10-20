@@ -1,0 +1,35 @@
+// ============================================================================
+// RetailIQ: Customer Analytics & Segmentation DAX Measures
+// ============================================================================
+
+// 1. Total Distinct Customers Transacting
+Active Transacting Customers = 
+DISTINCTCOUNT(fact_sales[customer_id])
+
+// 2. Average Customer Spend (Revenue per Customer)
+Revenue Per Customer = 
+DIVIDE([Total Net Revenue], [Active Transacting Customers], 0)
+
+// 3. Repeat Customer Count (Customers with > 1 completed order)
+Repeat Customers = 
+CALCULATE(
+    DISTINCTCOUNT(fact_sales[customer_id]),
+    FILTER(
+        VALUES(fact_sales[customer_id]),
+        CALCULATE(DISTINCTCOUNT(fact_sales[order_id])) > 1
+    )
+)
+
+// 4. Repeat Customer Rate %
+Repeat Customer Rate % = 
+DIVIDE([Repeat Customers], [Active Transacting Customers], 0)
+
+// 5. Customer Churn Risk Flag (No order in > 90 days)
+Customer Last Order Date = 
+MAX(dim_date[full_date])
+
+Days Since Last Order = 
+DATEDIFF([Customer Last Order Date], TODAY(), DAY)
+
+Is At Risk Customer = 
+IF([Days Since Last Order] > 90, "At Risk", "Active")

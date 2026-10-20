@@ -1,0 +1,67 @@
+// ============================================================================
+// RetailIQ: Time Intelligence & Comparative Variance DAX Measures
+// ============================================================================
+
+// 1. Prior Month Net Revenue
+Revenue Prior Month = 
+CALCULATE(
+    [Total Net Revenue],
+    DATEADD(dim_date[full_date], -1, MONTH)
+)
+
+// 2. Month-over-Month (MoM) Revenue Growth %
+MoM Revenue Growth % = 
+DIVIDE(
+    [Total Net Revenue] - [Revenue Prior Month],
+    [Revenue Prior Month],
+    0
+)
+
+// 3. Same Period Last Year (SPLY) Net Revenue
+Revenue SPLY = 
+CALCULATE(
+    [Total Net Revenue],
+    SAMEPERIODLASTYEAR(dim_date[full_date])
+)
+
+// 4. Year-over-Year (YoY) Revenue Growth %
+YoY Revenue Growth % = 
+DIVIDE(
+    [Total Net Revenue] - [Revenue SPLY],
+    [Revenue SPLY],
+    0
+)
+
+// 5. Year-to-Date (YTD) Cumulative Revenue
+Revenue YTD = 
+TOTALYTD(
+    [Total Net Revenue],
+    dim_date[full_date]
+)
+
+// 6. Prior Year YTD Revenue
+Revenue PY YTD = 
+CALCULATE(
+    [Revenue YTD],
+    SAMEPERIODLASTYEAR(dim_date[full_date])
+)
+
+// 7. YTD Growth %
+YTD Growth % = 
+DIVIDE(
+    [Revenue YTD] - [Revenue PY YTD],
+    [Revenue PY YTD],
+    0
+)
+
+// 8. 3-Month Rolling Average Revenue
+Rolling 3M Net Revenue = 
+CALCULATE(
+    [Total Net Revenue],
+    DATESINPERIOD(
+        dim_date[full_date],
+        LASTDATE(dim_date[full_date]),
+        -3,
+        MONTH
+    )
+) / 3
